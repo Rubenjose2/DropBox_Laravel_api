@@ -16,5 +16,13 @@
 //});
 
 
-Route::get('/','Filesystem@index');
+//Route::get('/','Filesystem@index');
 
+
+
+Route::get('/',function ()
+{
+    return view('home');
+});
+
+Route::post('/upload','Filesystem@file_upload')->name('file.upload');

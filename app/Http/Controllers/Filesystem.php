@@ -16,4 +16,15 @@ class Filesystem extends Controller
         return $container;
 
     }
+
+    public function file_upload(Request $request)
+    {
+        $school = $request->get('school');
+        $upload_file = $request->file('file');
+        $file_name = $upload_file->getClientOriginalName();
+        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
+
+        print_r($file_name);
+    }
+
 }
