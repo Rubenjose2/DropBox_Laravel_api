@@ -25,4 +25,10 @@ Route::get('/',function ()
     return view('home');
 });
 
+Route::get('/dropzone',function ()
+{
+   return view('dropzone');
+});
+
 Route::post('/upload','Filesystem@file_upload')->name('file.upload');
+Route::post('/upload/dropzone','Filesystem@dropzone')->name('dropzone');

@@ -11,6 +11,8 @@
           integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{{ url('/css/dropzone.css') }}">
+
 
     <!-- Styles -->
     <style>

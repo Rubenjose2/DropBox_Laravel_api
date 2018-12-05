@@ -21,7 +21,7 @@
 
                         </div>
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" name="file">
+                            <input type="file" class="custom-file-input" name="file" multiple>
                             <input type="hidden" name="_token" value="{{ csrf_token() }}">
                             <label class="custom-file-label" for="file">Choose file</label>
                         </div>

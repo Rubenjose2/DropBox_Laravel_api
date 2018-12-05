@@ -27,4 +27,9 @@ class Filesystem extends Controller
         print_r($file_name);
     }
 
+    public function dropzone(Request $request)
+    {
+
+    }
+
 }
