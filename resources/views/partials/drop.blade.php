@@ -4,7 +4,7 @@
         <div class="panel panel-default">
             <div class="panel-body">
                 <form action="{{route('dropzone')}}" method="post" enctype="multipart/form-data">
-                    @csrf
+                    <input type="hidden" name="_token" id="csrf_token" value ="{{csrf_token()}}"/>
                     <legend>File Uploader Dropbox</legend>
 
                     <div class="form-group">
@@ -19,11 +19,7 @@
                         </div>
                     </div>
 
-                    <div class="dropzone" id="myDropzone">
-                            <div class="text-center">
-                                <h3>Drop your files</h3>
-                            </div>
-                    </div>
+                    <div class="dropzone" id="myDropzone"></div>
                     <hr>
                     <button type="submit" class="btn btn-primary" id="submit-all">Submit</button>
 
@@ -34,3 +30,4 @@
     </div>
 
 </div>
+
