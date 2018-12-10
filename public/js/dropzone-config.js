@@ -22,7 +22,7 @@ Dropzone.options.myDropzone= {
     autoProcessQueue:false,
     chunking:true,
     forceChunking:true,
-    chunkSize:256000,
+    // chunkSize:256000,
     parallelChunkUploads:true,
     retryChunks:true,
     retryChunksLimit:3,
