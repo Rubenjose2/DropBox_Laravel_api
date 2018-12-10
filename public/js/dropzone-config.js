@@ -71,7 +71,6 @@ Dropzone.options.myDropzone= {
         {
             if(totalPercentage){
                 $("#myprogressbar").css('width',totalPercentage +'%');
-                console.log(totalPercentage);
             }
 
         })
