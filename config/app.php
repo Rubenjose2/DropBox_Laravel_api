@@ -163,6 +163,8 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         //Dropbox
         \BC\Laravel\DropboxDriver\ServiceProvider::class,
+        //Google cloud storage
+        Superbalist\LaravelGoogleCloudStorage\GoogleCloudStorageServiceProvider::class,
 
         /*
          * Package Service Providers...

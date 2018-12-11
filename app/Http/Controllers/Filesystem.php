@@ -32,6 +32,16 @@ class Filesystem extends Controller
         print_r($file_name);
     }
 
+    public function gg_file_upload( Request $request)
+    {
+        $school = $request->get('school');
+        $upload_file = $request->file('file');
+        $file_name = $upload_file->getClientOriginalName();
+        Storage::disk('gcs')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
+//        $file_name = env('GOOGLE_CLOUD_KEY_FILE');
+        print_r($file_name);
+    }
+
     public function dropzone(Request $request)
     {
 //
