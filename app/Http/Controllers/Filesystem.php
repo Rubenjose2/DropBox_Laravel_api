@@ -38,21 +38,12 @@ class Filesystem extends Controller
         $upload_file = $request->file('file');
         $file_name = $upload_file->getClientOriginalName();
         Storage::disk('gcs')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
-//        $file_name = env('GOOGLE_CLOUD_KEY_FILE');
         print_r($file_name);
     }
 
     public function dropzone(Request $request)
     {
-//
-//        $files = $request->file('file');
-        $dir = public_path().('/upload/');
-//
-//        foreach ($files as $file ){
-//            $filename = $file->getClientOriginalName();
-//            $file->move($dir,$filename);
-//
-//        }
+
         //Create the file receiver
         $receiver = new FileReceiver("file",$request,HandlerFactory::classFromRequest($request));
 
@@ -82,6 +73,38 @@ class Filesystem extends Controller
             'status' => true
         ]);
 
+    }
+
+    public function gg_dropzone(Request $request)
+    {
+        //Create the file receiver
+        $receiver = new FileReceiver("file",$request,HandlerFactory::classFromRequest($request));
+
+        //Check if the upload is success , throw exception or return response you need
+        if($receiver->isUploaded()=== false){
+            throw new UploadMissingFileException();
+        }
+
+        //receive the file
+
+        $save  = $receiver->receive();
+
+        //Check if the upload has finished
+        if ($save->isFinished())
+        {
+            //save the file and return any response
+            return $this->saveFiletoGGC($save->getFile());
+        }
+
+        //Because we are on chunk mode we need to send the status
+        //
+
+        $handler = $save->handler();
+
+        return response() ->json([
+            "done"=> $handler->getPercentageDone(),
+            'status' => true
+        ]);
     }
 
     protected function saveFile(UploadedFile $file)
@@ -130,6 +153,22 @@ class Filesystem extends Controller
         return response()->json([
        'name'=>$filename
     ]);
+    }
+
+    protected function saveFiletoGGC($file)
+    {
+        $filename = $this->createFilename($file);
+
+        $disk = Storage::disk('gcs');
+        //Here we are saving the file inside the Drop_box
+        $disk->putFileAs('demo',$file,$filename,'public');
+
+        //We need to unlink the file when uploaded to dropbox
+        unlink($file->getPathname());
+
+        return response()->json([
+            'name'=>$filename
+        ]);
     }
 
 }

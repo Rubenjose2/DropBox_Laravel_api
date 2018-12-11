@@ -13,7 +13,8 @@ function bytesToSize(bytes) {
 
 
 Dropzone.options.myDropzone= {
-    url: "upload/dropzone",
+    // url: "upload/dropzone",//used to put in dropbox
+    url:"./upload/dropzone",
     maxFiles:30,
     timeout:180000,
     parallelUploads:1,
