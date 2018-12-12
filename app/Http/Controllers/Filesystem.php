@@ -9,6 +9,8 @@ use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
 use Pion\Laravel\ChunkUpload\Handler\AbstractHandler;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
 use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
+use Intervention\Image\Facades\Image;
+
 
 
 class Filesystem extends Controller
@@ -27,9 +29,19 @@ class Filesystem extends Controller
         $school = $request->get('school');
         $upload_file = $request->file('file');
         $file_name = $upload_file->getClientOriginalName();
-        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
+//        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
 
-        print_r($file_name);
+//        print_r($file_name);
+
+        $img = Image::make($upload_file->getRealPath());
+        $img->resize(300, null, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+
+        $img->save('storage/test.jpg');
+        return $img->response('jpg');
+
+
     }
 
     public function gg_file_upload( Request $request)
@@ -161,7 +173,7 @@ class Filesystem extends Controller
 
         $disk = Storage::disk('gcs');
         //Here we are saving the file inside the Drop_box
-        $disk->putFileAs('demo',$file,$filename,'public');
+        $disk->putFileAs('/',$file,$filename,'public');
 
         //We need to unlink the file when uploaded to dropbox
         unlink($file->getPathname());
