@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\UploadedFile;
 use Pion\Laravel\ChunkUpload\Exceptions\UploadMissingFileException;
@@ -26,22 +27,71 @@ class Filesystem extends Controller
 
     public function file_upload(Request $request)
     {
+
+        //Getting the schedule information from the School
         $school = $request->get('school');
+
+        // File construction information//
+
         $upload_file = $request->file('file');
-        $file_name = $upload_file->getClientOriginalName();
-//        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
+        $file_name= $this->createFilename($upload_file);
 
-//        print_r($file_name);
+        //Thumbnail construction
 
-        $img = Image::make($upload_file->getRealPath());
-        $img->resize(300, null, function ($constraint) {
+
+        //refactoring the image
+        $resize = Image::make($upload_file);
+        $resize->resize(300,null,function($constraint)
+        {
             $constraint->aspectRatio();
         });
+        $resize->encode('jpg');
+        //Collecting original name and url of the image saved temp in the server
+        $thumbnail_image_name = $upload_file->getClientOriginalName();
+        $resize->save('storage/'.$thumbnail_image_name);
+        $saved_image_uri = $resize->dirname."/".$resize->basename;
 
-        $img->save('storage/test.jpg');
-        return $img->response('jpg');
+        //Saving the Temp Thumbnail file into dropbox
+        $upload_thumnail = Storage::disk('dropbox')->putFileAs("2018-2019/".$school,new File($saved_image_uri),"thum_".$file_name);
+
+        //Destroing the temporary file thumbnail
+        $resize->destroy();
+        unlink($saved_image_uri);
+
+        //Saving the full resolution if the image
+        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
 
 
+
+//        Storage::disk('dropbox')->put("2018-2019/image.jpg",$resize);
+
+//        $thumbnail = $this->small_picture($upload_file->getRealPath());
+//        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$thumbnail,$file_name_thum);
+
+
+
+
+//
+//        $img = Image::make($upload_file->getRealPath());
+//        $img->resize(300, null, function ($constraint) {
+//            $constraint->aspectRatio();
+//        });
+//        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$img,$file_name_thum);
+//        $img->save('storage/test.jpg');
+        return response()->json($upload_thumnail);
+
+
+    }
+
+    protected function small_picture($file)
+    {
+        $img = Image::make($file);
+        $img->resize(300,null,function($constraint)
+        {
+           $constraint->aspectRatio();
+        });
+
+        return $img;
     }
 
     public function gg_file_upload( Request $request)
@@ -119,6 +169,7 @@ class Filesystem extends Controller
         ]);
     }
 
+    //This function is saving the File LOCAL if is needed
     protected function saveFile(UploadedFile $file)
     {
         $fileName = $this->createFilename($file);
