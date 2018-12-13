@@ -28,71 +28,64 @@ class Filesystem extends Controller
     public function file_upload(Request $request)
     {
 
-        //Getting the schedule information from the School
-        $school = $request->get('school');
+//        //Getting the schedule information from the School
+//        $school = $request->get('school');
+//
+//        // File construction information//
+//
+//        $upload_file = $request->file('file');
+//        $file_name= $this->createFilename($upload_file);
+//
+//        //Thumbnail construction
+//
+//        $thumbnail = $this->small_picture($upload_file);
+//        $thumbnail_file = $thumbnail['content'];
+//        $thumbnail_uri = $thumbnail['url'];
+//
+//
+//        //Saving the Temp Thumbnail file into dropbox
+//        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,new File($thumbnail_uri),"thum_".$file_name);
+//
+//        //Destroying the temporary file thumbnail
+//        $thumbnail_file->destroy();
+//        unlink($thumbnail_uri);
+//
+//        //Saving the full resolution if the image
+//        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
+//
+//
+//        return response()->json($thumbnail_uri);
+//
+//
 
-        // File construction information//
 
-        $upload_file = $request->file('file');
-        $file_name= $this->createFilename($upload_file);
-
-        //Thumbnail construction
-
-
-        //refactoring the image
-        $resize = Image::make($upload_file);
+        $temp_folder = public_path('temp/');
+        $resize = Image::make(imagecreatefromjpeg($temp_folder.'IMG_1448_eaa3b82732cd8c8f2d3c52a7c0fd1400.jpg'));
         $resize->resize(300,null,function($constraint)
         {
             $constraint->aspectRatio();
         });
         $resize->encode('jpg');
+
+
+        //Here we are collecting and adding the Watermark image
+        $watermark = Image::make(public_path('storage/watermark/my_gsnp_watermark.png'));
+        $resize->insert($watermark,'center');
+
+
         //Collecting original name and url of the image saved temp in the server
-        $thumbnail_image_name = $upload_file->getClientOriginalName();
-        $resize->save('storage/'.$thumbnail_image_name);
+        $thumbnail_image_name = 'thum_IMG_1448_eaa3b82732cd8c8f2d3c52a7c0fd1400.jpg';
+        $resize->save($temp_folder.$thumbnail_image_name);
         $saved_image_uri = $resize->dirname."/".$resize->basename;
 
-        //Saving the Temp Thumbnail file into dropbox
-        $upload_thumnail = Storage::disk('dropbox')->putFileAs("2018-2019/".$school,new File($saved_image_uri),"thum_".$file_name);
+        //Sending back the content and the url of the thumbnail
+        return $saved_image_uri;
 
-        //Destroing the temporary file thumbnail
-        $resize->destroy();
-        unlink($saved_image_uri);
-
-        //Saving the full resolution if the image
-        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
-
-
-
-//        Storage::disk('dropbox')->put("2018-2019/image.jpg",$resize);
-
-//        $thumbnail = $this->small_picture($upload_file->getRealPath());
-//        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$thumbnail,$file_name_thum);
-
-
-
-
-//
-//        $img = Image::make($upload_file->getRealPath());
-//        $img->resize(300, null, function ($constraint) {
-//            $constraint->aspectRatio();
-//        });
-//        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$img,$file_name_thum);
-//        $img->save('storage/test.jpg');
-        return response()->json($upload_thumnail);
 
 
     }
 
-    protected function small_picture($file)
-    {
-        $img = Image::make($file);
-        $img->resize(300,null,function($constraint)
-        {
-           $constraint->aspectRatio();
-        });
 
-        return $img;
-    }
 
     public function gg_file_upload( Request $request)
     {
@@ -204,14 +197,33 @@ class Filesystem extends Controller
 
     protected function saveFiletoDropbox($file)
     {
+
+        //Selecting the type of Disk
+        $disk = Storage::disk('dropbox');
+
+        //Composing the fine name
         $filename = $this->createFilename($file);
 
-        $disk = Storage::disk('dropbox');
         //Here we are saving the file inside the Drop_box
         $disk->putFileAs('demo',$file,$filename);
 
+        //Thumbnail construction
+
+        $thumbnail = $this->small_picture($file,$filename);
+        $thumbnail_file = $thumbnail['content'];
+        $thumbnail_uri = $thumbnail['url'];
+
+        //Saving the Temp Thumbnail file into drop_box
+
+        $disk->putFileAs("demo",new File($thumbnail_uri),"thum_".$filename);
+
+
+
         //We need to unlink the file when uploaded to dropbox
-        unlink($file->getPathname());
+//        unlink($file->getPathname());
+//        $thumbnail_file->destroy();
+//        unlink($thumbnail_uri);
+
 
         return response()->json([
        'name'=>$filename
@@ -233,5 +245,42 @@ class Filesystem extends Controller
             'name'=>$filename
         ]);
     }
+    protected function small_picture($file,$filename)
+        /** This private function would create a small version of the File
+         *  and add the water mark to it.
+         * The resolution of the file would be set to 300 px constraint .
+         * @Param is the input file.
+         * @Return is the content file and the url where the picture is saved inside the local server
+         */
 
+    {
+        //need to create a temporary file locally to manipulate it and make it thumbnail
+
+        $temp_folder = public_path('temp/');
+        $file->move($temp_folder,$filename);
+
+        //refactoring the image
+
+        $resize = Image::make(imagecreatefromjpeg($temp_folder.$filename));
+        dd($resize);
+
+        $resize->resize(300,null,function($constraint)
+        {
+            $constraint->aspectRatio();
+        });
+        $resize->encode('jpg');
+
+
+        //Here we are collecting and adding the Watermark image
+        $watermark = Image::make(public_path('storage/watermark/my_gsnp_watermark.png'));
+        $resize->insert($watermark,'center');
+
+        //Collecting original name and url of the image saved temp in the server
+        $thumbnail_image_name = $file->getClientOriginalName();
+        $resize->save('storage/'.$thumbnail_image_name);
+        $saved_image_uri = $resize->dirname."/".$resize->basename;
+
+        //Sending back the content and the url of the thumbnail
+        return array('content'=>$resize,'url' => $saved_image_uri);
+    }
 }

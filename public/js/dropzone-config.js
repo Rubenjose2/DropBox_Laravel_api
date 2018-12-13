@@ -25,7 +25,7 @@ Dropzone.options.myDropzone= {
     forceChunking:true,
     chunkSize:256000,
     parallelChunkUploads:false,
-    retryChunks:true,
+    retryChunks:false,
     retryChunksLimit:3,
 
     init: function ()
