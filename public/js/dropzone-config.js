@@ -54,8 +54,10 @@ Dropzone.options.myDropzone= {
         })
         this.on("sending",function (file,xhr,formData) {
             formData.append('school_name',jQuery('#school').val());
+            formData.append('disk_selector',jQuery('#disk-selector').val());
             formData.append("_token", token);
             formData.append("filezzide",file.size);
+            formData.append("watermark",jQuery("input[name='inlineRadioOptions']:checked").val());
 
         });
         this.on("success",function()
