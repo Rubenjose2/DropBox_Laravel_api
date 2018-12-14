@@ -59,8 +59,8 @@ class Filesystem extends Controller
 //
 
 
-        $temp_folder = public_path('temp/');
-        $resize = Image::make(imagecreatefromjpeg($temp_folder.'IMG_1448_eaa3b82732cd8c8f2d3c52a7c0fd1400.jpg'));
+        $temp_folder = base_path('chunks/');
+        $resize = Image::make(imagecreatefromjpeg($temp_folder.'IMG_1421.jpg-ip9ngAVMrd96UcoOU3NrvBpB0jHHxSrgmqK7pJJY.part'));
         $resize->resize(300,null,function($constraint)
         {
             $constraint->aspectRatio();
@@ -204,25 +204,29 @@ class Filesystem extends Controller
         //Composing the fine name
         $filename = $this->createFilename($file);
 
-        //Here we are saving the file inside the Drop_box
-        $disk->putFileAs('demo',$file,$filename);
+
 
         //Thumbnail construction
 
         $thumbnail = $this->small_picture($file,$filename);
+        $thumbnail_name = $thumbnail['name'];
         $thumbnail_file = $thumbnail['content'];
         $thumbnail_uri = $thumbnail['url'];
 
         //Saving the Temp Thumbnail file into drop_box
 
-        $disk->putFileAs("demo",new File($thumbnail_uri),"thum_".$filename);
 
 
+        $disk->putFileAs("demo",new File($thumbnail_uri),$thumbnail_name);
+
+
+        //Here we are saving the file inside the Drop_box
+        $disk->putFileAs('demo',$file,$filename);
 
         //We need to unlink the file when uploaded to dropbox
-//        unlink($file->getPathname());
-//        $thumbnail_file->destroy();
-//        unlink($thumbnail_uri);
+        unlink($file->getPathname());
+        $thumbnail_file->destroy();
+        unlink($thumbnail_uri);
 
 
         return response()->json([
@@ -254,16 +258,12 @@ class Filesystem extends Controller
          */
 
     {
-        //need to create a temporary file locally to manipulate it and make it thumbnail
-
-        $temp_folder = public_path('temp/');
-        $file->move($temp_folder,$filename);
+        $chunk_file = $file->getPathname();
+        $chunk_path = $file->getPath();//This version would save the file but hidden
+        $chunk_path_normalized = str_replace("/.","/",$chunk_path);
 
         //refactoring the image
-
-        $resize = Image::make(imagecreatefromjpeg($temp_folder.$filename));
-        dd($resize);
-
+        $resize = Image::make(imagecreatefromjpeg($chunk_file));
         $resize->resize(300,null,function($constraint)
         {
             $constraint->aspectRatio();
@@ -276,11 +276,14 @@ class Filesystem extends Controller
         $resize->insert($watermark,'center');
 
         //Collecting original name and url of the image saved temp in the server
-        $thumbnail_image_name = $file->getClientOriginalName();
-        $resize->save('storage/'.$thumbnail_image_name);
+        $thumbnail_image_name = "thum_".$filename;
+        $resize->save($chunk_path_normalized.$thumbnail_image_name);
         $saved_image_uri = $resize->dirname."/".$resize->basename;
 
         //Sending back the content and the url of the thumbnail
-        return array('content'=>$resize,'url' => $saved_image_uri);
+        return array(
+            'content'=>$resize,
+            'name'=>$resize->basename,
+            'url' => $saved_image_uri);
     }
 }
