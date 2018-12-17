@@ -33,13 +33,5 @@ Route::get('/dropzone',function ()
 Route::post('/upload_file','Filesystem@file_upload')->name('file.upload');
 Route::post('/upload/dropzone','Filesystem@dropzone')->name('dropzone');
 
-//Google cloud Storage version
+Route::get('/database','Schedule@index');
 
-Route::prefix('google')->group(function ()
-{
-   Route::get('/',function () {return view('google_single');});
-   Route::get('/dropzone',function(){return view('google_dropzone');});
-   Route::post('/upload','Filesystem@gg_file_upload')->name('gg_file.upload');
-   Route::post('/upload/dropzone','Filesystem@gg_dropzone')->name('gg_dropzone');
-
-});

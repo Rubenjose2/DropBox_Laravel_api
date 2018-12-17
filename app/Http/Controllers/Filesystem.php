@@ -196,7 +196,9 @@ class Filesystem extends Controller
         /** This private function would create a small version of the File
          *  and add the water mark to it.
          * The resolution of the file would be set to 300 px constraint .
-         * @Param is the input file.
+         * @Param is the input file $file
+         * @Param $filename is the name of the file created
+         * @Param $watermark is the option send in order to save or not the file with watermark
          * @Return is the content file and the url where the picture is saved inside the local server
          */
 
