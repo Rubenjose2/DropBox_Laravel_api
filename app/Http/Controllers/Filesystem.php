@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Custom;
+use App\Group;
+use App\Media;
+use App\Schedules;
 use Illuminate\Http\Request;
 use Illuminate\Http\File;
 use Illuminate\Support\Facades\Storage;
@@ -18,56 +22,42 @@ class Filesystem extends Controller
 {
     public function index()
     {
-        Storage::disk('dropbox')->makeDirectory("Baseball");
-        $container = Storage::disk('dropbox')->allDirectories();
-
-        return $container;
-
+        $data = Custom::get_schedule_season();
+        return view('dropzone')->with('data',$data);
     }
 
     public function file_upload(Request $request)
     {
 
-        //Getting the schedule information from the School
-        $school = $request->get('school');
-
-        // File construction information//
-
-        $upload_file = $request->file('file');
-        $file_name= $this->createFilename($upload_file);
-
-        //Thumbnail construction
-
-        $thumbnail = $this->small_picture($upload_file);
-        $thumbnail_file = $thumbnail['content'];
-        $thumbnail_uri = $thumbnail['url'];
-
-
-        //Saving the Temp Thumbnail file into dropbox
-        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,new File($thumbnail_uri),"thum_".$file_name);
-
-        //Destroying the temporary file thumbnail
-        $thumbnail_file->destroy();
-        unlink($thumbnail_uri);
-
-        //Saving the full resolution if the image
-        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
-
-
-        return response()->json($thumbnail_uri);
+//        //Getting the schedule information from the School
+//        $school = $request->get('school');
+//
+//        // File construction information//
+//
+//        $upload_file = $request->file('file');
+//        $file_name= $this->createFilename($upload_file);
+//
+//        //Thumbnail construction
+//
+//        $thumbnail = $this->small_picture($upload_file);
+//        $thumbnail_file = $thumbnail['content'];
+//        $thumbnail_uri = $thumbnail['url'];
+//
+//
+//        //Saving the Temp Thumbnail file into dropbox
+//        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,new File($thumbnail_uri),"thum_".$file_name);
+//
+//        //Destroying the temporary file thumbnail
+//        $thumbnail_file->destroy();
+//        unlink($thumbnail_uri);
+//
+//        //Saving the full resolution if the image
+//        Storage::disk('dropbox')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
 
 
-    }
+        return response()->json($request);
 
 
-
-    public function gg_file_upload( Request $request)
-    {
-        $school = $request->get('school');
-        $upload_file = $request->file('file');
-        $file_name = $upload_file->getClientOriginalName();
-        Storage::disk('gcs')->putFileAs("2018-2019/".$school,$upload_file,$file_name);
-        print_r($file_name);
     }
 
     public function dropzone(Request $request)
@@ -90,11 +80,10 @@ class Filesystem extends Controller
         //Check if the upload has finished
         if ($save->isFinished())
         {
-            //save the file and return any response
+            //save the file in the cloud drop box or google cloud and also record the database
             return $this->saveFiletoCloud(
-                $save->getFile(),
-                $request->get('disk_selector'),
-                $request->get('watermark'));
+                $request,
+                $save->getFile());
         }
 
         //Because we are on chunk mode we need to send the status
@@ -108,6 +97,7 @@ class Filesystem extends Controller
         return response() ->json([
             "done"=> $handler->getPercentageDone(),
             'status' => true,
+            'school_key'=>$request->get('school_key'),
             'school_name '=>$school,
             'disk'=>$request->get('disk_selector'),
             'watermark'=>$request->get('watermark')
@@ -148,8 +138,20 @@ class Filesystem extends Controller
         return $filename;
     }
 
-    protected function saveFiletoCloud($file,$drive,$watermark)
+    /**
+     * @param $request
+     * @param $file
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * This function would save the information is the cloud dropbox or google cloud services
+     * also modify record inside the database
+     */
+    protected function saveFiletoCloud($request,$file)
     {
+
+        $id = $request->get('school_key');
+        $drive = $request->get('disk_selector');
+        $watermark = $request->get('watermark');
 
 
         //Composing the fine name
@@ -167,24 +169,30 @@ class Filesystem extends Controller
         {
             case "google":
                 $disk = Storage::disk('gcs');
+                $folder = '';
                 break;
             case "dropbox":
                 $disk = Storage::disk('dropbox');
+                $folder = '/'.$request->get('school_name');
                 break;
         }
 
         //Saving the Temp Thumbnail file into drop_box
 
 
-        $disk->putFileAs("demo",new File($thumbnail_uri),$thumbnail_name,'public');
+        $disk->putFileAs('demo'.$folder,new File($thumbnail_uri),$thumbnail_name,'public');
 
         //Here we are saving the file inside the Drop_box
-        $disk->putFileAs('demo',$file,$filename,'public');
+        $disk->putFileAs('demo'.$folder,$file,$filename,'public');
 
         //We need to unlink the file when uploaded to dropbox
         unlink($file->getPathname());
         $thumbnail_file->destroy();
         unlink($thumbnail_uri);
+
+        //UPDATING THE DATA RECORD on tables
+
+        $records = Schedules::where('id',$id)->update(['bulk_load'=>1]);
 
 
         return response()->json([

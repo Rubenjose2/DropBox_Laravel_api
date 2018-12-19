@@ -20,10 +20,9 @@
 
 
 
-Route::get('/',function ()
-{
-    return view('home');
-});
+Route::get('/','Filesystem@index');
+
+Route::get('/test','MediaFiles@index');
 
 Route::get('/dropzone',function ()
 {

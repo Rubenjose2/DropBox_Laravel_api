@@ -72,7 +72,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Media Manager
+    | MediaFiles Manager
     |--------------------------------------------------------------------------
     |
     | Here you can specify if media manager can show hidden files like(.gitignore)

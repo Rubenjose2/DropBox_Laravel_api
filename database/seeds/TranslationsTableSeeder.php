@@ -150,9 +150,9 @@ class TranslationsTableSeeder extends Seeder
             $this->trans('pt', $this->arr($_tpl, $_item->id), 'Painel de Controle');
         }
 
-        $_item = $this->findMenuItem('Media');
+        $_item = $this->findMenuItem('MediaFiles');
         if ($_item->exists) {
-            $this->trans('pt', $this->arr($_tpl, $_item->id), 'Media');
+            $this->trans('pt', $this->arr($_tpl, $_item->id), 'MediaFiles');
         }
 
         $_item = $this->findMenuItem('Posts');

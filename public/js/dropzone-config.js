@@ -54,6 +54,7 @@ Dropzone.options.myDropzone= {
         })
         this.on("sending",function (file,xhr,formData) {
             formData.append('school_name',jQuery('#school').val());
+            formData.append('school_key',jQuery('#school').find(':selected').attr('data-content'));
             formData.append('disk_selector',jQuery('#disk-selector').val());
             formData.append("_token", token);
             formData.append("filezzide",file.size);

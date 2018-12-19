@@ -14,9 +14,9 @@
                         <div class="form-group">
                             <label for="" class="col-sm-2 control-label"></label>
                             <select class="form-control" id="school" name="school">
-                                <option value="JEBSTUARTHSvsCCHS">JEB Stuart High School Vs Culpeper Country High School @7:00 pm</option>
-                                <option value="JEBSTUARTHSvsEVHS">Easter View High School Vs Culpeper Country High School @7:00 pm</option>
-                                <option value="CVHSVsAHS">Charlotes Village High School Vs Albemarle High School @7:00 pm</option>
+                                @foreach($data as $record)
+                                    <option data-content="{{$record->id}}">{{$record->home_name}} <strong>Vs</strong> {{$record->event_opponent_name}} | {{$record->event_date}}</option>
+                                @endforeach
                             </select>
 
                         </div>
