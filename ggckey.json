@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "sigma-night-225120",
+  "private_key_id": "d3dd16f56de958088237eb0a15a4ed06656fea0a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC8CJmHL2Gddbb4\nPneOSVdlmu/ACssoVqhOgm6dqpF71NPq7317ZnaLxBy6t7nnvcHJhiLgVTXeVGMZ\n9ZXErOYbwQZ66N6PQSdeT6gSCwJxcUvGtB32IdVUvGa3ZNzrhpvXi1c+NlxYAthO\naBkntppFzs7rMibil3bAgIAOHa6awTXkCNK1c683O/wnMp05UValXp/YuNN0dfs4\nRk6Pe6AcvXKpWhQ8mZjlbR2OHpX2NtywvkI0IcRCR5/UuIxQuRIRmOYWGiWGJosS\n+zJm9xP81Vuy0nGKXxqXqI00VPbT4D+RUx9AmXStsYAOnJFhuXw9LLoOyJe53Jpy\nN3oLctX3AgMBAAECggEAA4Evh18BNUOb6O2VIeBJEjo8jLpGxhYzZd81e5fRxVqW\nppLXJmUnAXziwjIpc2HMilqHLOI5sk6lWDcFFxjX4x2KZuEPQOFIgBABBHETFxUz\nAd2aj1tbFAy8518oZPVp0y8kLaMqvnMzH+b9zQkwv+tWXPje06taCcV7XYf9GKJI\nFdwN2vXgg14oVkx67K4OgLPDhBGVjXqo71JQeTkGzqYSPWxXNkdedMfmLl1CrF9j\n2N5PBbwXga3VQ1/8A8qG1tks6aBNnAN+Fu714SNjaOxCK1DPUQxbJy9ASBoAaUsJ\nOo2S6Y1C3nWeWgFuxPmhEFtFwP70d1swhsd8eubEoQKBgQDhabZ1oTF5JEW3hArQ\nhNARyHvLbbD76eEA9ZOO1e4ozeEjBqECwAh4aee/ZZnR2UfM1bM0yJZJVHcNnr8i\nTPuqjhJ/0vBVLc9AHXjQAj/r6DmFA+AHExPOgInewDtfR0K4YorOS7Fo5vjk6j+v\nf1wOXubLHza+mHVWrEkBLjuYlwKBgQDVjGvIRoI+MkIXsSF3Kd9vqtiDw/nGV7by\ngpFCY6Acu8MUiSMxAMs8UzUbdQboBx/Y/ymseyJuTCibLdqGP/wlUCza1FsexAr8\nEXpAAHsaLuAkUQ9qLm3wtKNaBji2MNS/VMHubbEnL02n5npFPmQgpEEXA4pqgz5r\n6fnx0Hv5oQKBgEx+c0y3xvI1PPNp+8GHUJS4VEpUjxrt401QCSMPtiJiu2QHe9xT\nDozOY7av4+MyuQrp+kaPS3DXGQ+mL3aUaVMXo299RdGiGhLH7ZepK8gCpoJdLkk4\nUCBjvmW5Fmze4eVwi2o2hZ3zw8LrO3Fy5up5ihikHw/O7QLctGmSJudBAoGAJACl\nl0FT6fp9LBNf6gA0PFZYZHag4LCfFmmu5bt4HgAF1qt8NGHG4efBV1y2il3RH7t9\nIigsWN4cJnVnlySodP38YfRVXG1+0Jp9utaZ6oMmpNjJuYQUYvWBaMcNvqGi7JL0\nkycJK+sMs5bm3E+1f89RbfjZ2DVCS91Jl1wn2qECgYEAoz65dkpP8e4R+DdMODva\nS2sfsgjXBw5PvAukZULm0K+98QG84yfVO3XiirLBHIChFSBpLcQMpEDpB+cdWTRR\nHmtJTw81VzUMcYFYQ0qAC7Dcfahmdbtx+RVacs9FIGWsrBQ50UdClbsPTF3zb83R\nsadksSDHO0u6P1ZsUxyDqiM=\n-----END PRIVATE KEY-----\n",
+  "client_email": "demo-google-dropzone@sigma-night-225120.iam.gserviceaccount.com",
+  "client_id": "106064966938916845199",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/demo-google-dropzone%40sigma-night-225120.iam.gserviceaccount.com"
+}

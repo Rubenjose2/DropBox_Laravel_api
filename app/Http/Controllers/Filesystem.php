@@ -15,11 +15,18 @@ use Pion\Laravel\ChunkUpload\Handler\AbstractHandler;
 use Pion\Laravel\ChunkUpload\Handler\HandlerFactory;
 use Pion\Laravel\ChunkUpload\Receiver\FileReceiver;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\DB;
 
 
 
 class Filesystem extends Controller
 {
+    public function __construct()
+    {
+        $this->groups = new Groups();
+        $this->schedules = new Schedule();
+        $this->media_files = new MediaFiles();
+    }
     public function index()
     {
         $data = Custom::get_schedule_season();
@@ -170,20 +177,24 @@ class Filesystem extends Controller
             case "google":
                 $disk = Storage::disk('gcs');
                 $folder = '';
+                $bucket = env('GOOGLE_CLOUD_STORAGE_BUCKET');
+                $media_url = $disk->url($folder.$filename);
                 break;
             case "dropbox":
                 $disk = Storage::disk('dropbox');
                 $folder = '/'.$request->get('school_name');
+                $bucket = 'DROPBOX';
+                $media_url = 'N/A';
                 break;
         }
 
         //Saving the Temp Thumbnail file into drop_box
 
 
-        $disk->putFileAs('demo'.$folder,new File($thumbnail_uri),$thumbnail_name,'public');
+        $disk->putFileAs($folder,new File($thumbnail_uri),$thumbnail_name,'public');
 
         //Here we are saving the file inside the Drop_box
-        $disk->putFileAs('demo'.$folder,$file,$filename,'public');
+        $disk->putFileAs($folder,$file,$filename,'public');
 
         //We need to unlink the file when uploaded to dropbox
         unlink($file->getPathname());
@@ -194,11 +205,43 @@ class Filesystem extends Controller
 
         $records = Schedules::where('id',$id)->update(['bulk_load'=>1]);
 
+        //Constructing the Media file//
+
+        $media_file =
+            [
+                'name' => $filename,
+                'bucket' => $bucket,
+                'content_type' => 'image/jpg',
+                'media' => $media_url,
+                'ext'=>'jpg'
+            ];
+
+        $this->save_data_DB($id,$media_file);
 
         return response()->json([
-       'name'=>$filename
+            $media_file
     ]);
     }
+
+    protected function save_data_DB($id,$media_file)
+    {
+        DB::enableQueryLog();
+        $data = $this->schedules->find($id);
+
+        $groups_ids = ['home_id' => $data['group_id'],'opponent_id'=>$data['event_opponent_id']];
+
+        $files = $this->media_files->setMediafile($media_file);
+
+        foreach ($groups_ids as $group_id)
+        {
+            $this->groups->setMediaFiles($group_id,$files);
+        }
+
+        dd(DB::getQueryLog());
+
+        return $groups_ids;
+    }
+
 
     protected function small_picture($file,$filename,$watermark)
         /** This private function would create a small version of the File

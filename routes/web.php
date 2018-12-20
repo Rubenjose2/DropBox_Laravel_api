@@ -22,7 +22,7 @@
 
 Route::get('/','Filesystem@index');
 
-Route::get('/test','MediaFiles@index');
+Route::get('/test','Test@index');
 
 Route::get('/dropzone',function ()
 {
