@@ -225,7 +225,7 @@ class Filesystem extends Controller
 
     protected function save_data_DB($id,$media_file)
     {
-        DB::enableQueryLog();
+
         $data = $this->schedules->find($id);
 
         $groups_ids = ['home_id' => $data['group_id'],'opponent_id'=>$data['event_opponent_id']];
@@ -236,8 +236,6 @@ class Filesystem extends Controller
         {
             $this->groups->setMediaFiles($group_id,$files);
         }
-
-        dd(DB::getQueryLog());
 
         return $groups_ids;
     }
