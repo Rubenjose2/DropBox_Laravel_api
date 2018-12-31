@@ -12,9 +12,17 @@ class Groups extends Controller
 {
 
 
+    public function index()
+    {
+        DB::enableQueryLog();
+        $data = Group::all();
+        dd(DB::getQueryLog());
+        return $data;
+    }
+
     public function get_slug($group_id)
     {
-        $slug = Group::find(['group_id',$group_id])->first();
+        $slug = Group::find([$group_id])->first();
         if($slug) {
             return response()->json(array('slug' => $slug['slug']), 200);
         }

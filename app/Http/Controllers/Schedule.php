@@ -19,9 +19,9 @@ class Schedule extends Controller
 
     public function find($id)
     {
-        $data = Schedules::find($id);
-
+        $data = Schedules::with(['home','opponent'])
+            ->where('id',$id)
+            ->get();
         return $data;
-
     }
 }

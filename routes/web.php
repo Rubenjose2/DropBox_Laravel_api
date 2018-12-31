@@ -19,15 +19,22 @@
 //Route::get('/','Filesystem@index');
 
 
-Route::prefix('schedule')->group(function()
-{
-    Route::get('/','Schedule@index');
-    Route::get('find/{id}','Schedule@find');
-});
+Route::get('schedule','Schedule@index');
+Route::get('schedule/find/{id}','Schedule@find');
+
+
+Route::get('groups','Groups@index');
+Route::get('groups/slug/{slug}','Groups@get_slug');
+
+//
+//Route::prefix('schedule')->group(function()
+//{
+//    Route::get('/','Schedule@index');
+//    Route::get('find/{id}','Schedule@find');
+//});
+
 Route::get('/','Filesystem@index');
-
 Route::get('/test','Test@index');
-
 Route::get('/dropzone',function ()
 {
    return view('dropzone');
@@ -35,6 +42,4 @@ Route::get('/dropzone',function ()
 
 Route::post('/upload_file','Filesystem@file_upload')->name('file.upload');
 Route::post('/upload/dropzone','Filesystem@dropzone')->name('dropzone');
-
-Route::get('/database','Schedule@index');
 
