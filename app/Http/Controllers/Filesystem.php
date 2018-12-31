@@ -230,11 +230,11 @@ class Filesystem extends Controller
 
         $groups_ids = ['home_id' => $data['group_id'],'opponent_id'=>$data['event_opponent_id']];
 
-        $files = $this->media_files->setMediafile($media_file);
+        $files = $this->media_files->saveMediafile($media_file);
 
         foreach ($groups_ids as $group_id)
         {
-            $this->groups->setMediaFiles($group_id,$files);
+            $this->groups->setMediaFiles($group_id,$files,$id);
         }
 
         return $groups_ids;

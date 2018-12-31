@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 class MediaFiles extends Controller
 {
 
-    public function setMediafile($media)
+    public function saveMediafile($media)
     {
         $new_media = new Media($media);//need to receive the array with values
         $new_media->save();

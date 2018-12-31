@@ -27,13 +27,14 @@ class Groups extends Controller
      *
      * This function would receive the id of the group and save media data inside the media_relation
      */
-    public function setMediaFiles($id,$media)
+    public function setMediaFiles($id,$media,$events_id = null)
     {
-//        $new_media = new Media(['name'=>'test.jpp']);//need to receive the array with values
-//        $new_media->save();
         $data = Group::find($id);
-        $data->media()->attach($media);
-
+        if($events_id){
+            $data->media()->attach($media,['events_id'=> $events_id]);
+        }else{
+            $data->media()->attach($media);
+        }
         return response()->json(array('Media files added successfully'),200);
     }
 }

@@ -18,15 +18,14 @@ class Test extends Controller
     public function index()
     {
         DB::enableQueryLog();
-        $data = $this->schedules->find(307299);
+        $data = $this->schedules->find(310318);
 
         $groups_ids = ['home_id' => $data['group_id'],'opponent_id'=>$data['event_opponent_id']];
 
-        $files = $this->media_files->setMediafile();
 
         foreach ($groups_ids as $group_id)
         {
-            $this->groups->setMediaFiles($group_id,$files);
+            $this->groups->setMediaFiles($group_id,'1',310318);
         }
 
         dd(DB::getQueryLog());

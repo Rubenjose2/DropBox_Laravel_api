@@ -19,7 +19,11 @@
 //Route::get('/','Filesystem@index');
 
 
-
+Route::prefix('schedule')->group(function()
+{
+    Route::get('/','Schedule@index');
+    Route::get('find/{id}','Schedule@find');
+});
 Route::get('/','Filesystem@index');
 
 Route::get('/test','Test@index');

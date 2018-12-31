@@ -10,6 +10,8 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
           integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 
+
+
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,600" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ url('/css/dropzone.css') }}">
 
@@ -62,9 +64,14 @@
             text-decoration: none;
             text-transform: uppercase;
         }
+        .panel-heading {
+            background-color: #0157ad;
+        }
 
         .m-b-md {
             margin-bottom: 30px;
         }
     </style>
+
+
 </head>

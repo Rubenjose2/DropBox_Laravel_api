@@ -10,7 +10,7 @@ class Schedule extends Controller
 {
     public function index()
     {
-        $data = Schedule::with(['home','opponent','seasons'])
+        $data = Schedules::with(['home','opponent','seasons'])
             ->whereRaw('(group_result AND opponent_result)is NULL')
             ->take(500)
             ->get();

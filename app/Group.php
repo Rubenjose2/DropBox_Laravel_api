@@ -8,6 +8,7 @@ use App\Media;
 class Group extends Model
 {
     public $table = 'groups';
+    public $primaryKey = 'group_page_id';
     public $timestamps = false;
 
     public function media(){
